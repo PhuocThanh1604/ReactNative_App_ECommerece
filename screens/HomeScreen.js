@@ -201,8 +201,11 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const { userId, setUserId } = useContext(UserType);
+  const [selectedAddress,setSelectedAddress] = useState("")
+  console.log(selectedAddress)
   const [addresses, setAddresses] = useState([]);
   const [category, setCategory] = useState("jewelery");
+  const [companyOpen, setCompanyOpen] = useState(false);
   const [items, setItems] = useState([
     { label: "Men's clothing", value: "men's clothing" },
     { label: "jewelery", value: "jewelery" },
@@ -259,16 +262,9 @@ const HomeScreen = () => {
     };
     fetchUser();
   }, []);
-  console.log("adddresss", addresses);
   return (
     <>
-      <SafeAreaView
-        style={{
-          paddingTop: Platform.OS === "android" ? 40 : 0,
-          flex: 1,
-          backgroundColor: "white",
-        }}
-      >
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 40 : 0, flex: 1, backgroundColor: "white" }}>
         <ScrollView>
           <View
             style={{
@@ -308,7 +304,7 @@ const HomeScreen = () => {
           <Pressable
             onPress={() => setModalVisible(!modalVisible)}
             style={{
-              flexDirection: "row",
+              flexDirection: "row", 
               alignItems: "center",
               gap: 5,
               padding: 10,
@@ -317,9 +313,11 @@ const HomeScreen = () => {
           >
             <Ionicons name="location-outline" size={24} color="black" />
             <Pressable>
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                Deliver to SGN - Bankcok 560021
-              </Text>
+              {selectedAddress?(
+                <Text>
+                  Deliver to {selectedAddress.name} - {selectedAddress.street}
+                </Text>
+              ):(<Text style={{fontSize:13,fontWeight:"500"}}>Add a Address</Text>)}
             </Pressable>
             <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
           </Pressable>
@@ -476,27 +474,22 @@ const HomeScreen = () => {
               marginBottom: open ? 50 : 15,
             }}
           >
-            <DropDownPicker
-              style={{
-                borderColor: "#B7B7B7",
-
-                height: 30,
-                marginBottom: open ? 120 : 15,
-              }}
-              open={open}
-              value={category}
-              items={items}
-              setOpen={setOpen}
-              setValue={setCategory}
-              setItems={setItems}
-              placeholder="choose category"
-              placeholderStyle={styles.placeholderStyle}
-              onOpen={onGenderOpen}
-              // onChangeValue={onChange}
-              zIndex={3000}
-              zIndexInverse={1000}
-            />
+          <DropDownPicker
+          style={{ borderColor: "#B7B7B7", height: 30, marginBottom: open ? 120 : 15 }}
+          open={open}
+          value={category}
+          items={items}
+          setOpen={setOpen}
+          setValue={setCategory}
+          setItems={setItems}
+          placeholder="choose category"
+          placeholderStyle={styles.placeholderStyle}
+          onOpen={onGenderOpen}
+          zIndex={3000}
+          zIndexInverse={1000}
+        />
           </View>
+          
 
           <View
             style={{
@@ -511,6 +504,8 @@ const HomeScreen = () => {
                 <ProductItem item={item} key={index} />
               ))}
           </View>
+
+          
         </ScrollView>
       </SafeAreaView>
 
@@ -541,6 +536,7 @@ const HomeScreen = () => {
             {/*alrady added addreeses*/}
             {addresses.length > 0 && (
               <Pressable
+              onPress={()=>setSelectedAddress(addresses[0])}
                 style={{
                   width: 140,
                   height: 140,
@@ -550,17 +546,20 @@ const HomeScreen = () => {
                   marginTop: 10,
                   justifyContent: "center",
                   alignItems: "center",
-                  gap:3,marginRight:15
+                  gap:3,marginRight:15,
+                  backgroundColor:selectedAddress=== addresses[0] ?"#FBCEB1":"white"
                 }}
               >
                 <View style={{flexDirection:"row",alignItems:"center",gap:3 }}>
                   <Text> {addresses[0].name}</Text>
                   <Entypo name="location-pin" size={24} color="red" />
                 </View>
-                <Text style={{ fontSize: 13, color: "#181818" }}>
+                <Text  style={{width:120,textAlign:"center", fontSize: 13}}>
                   {" "}
                  {addresses[0].houseNo},{addresses[0].landmark}
                 </Text>
+                <Text style={{width:120,textAlign:"center", fontSize: 13}}>{addresses[0].street}</Text>
+                <Text numberOfLines={1} style={{width:120,textAlign:"center", fontSize: 13}}>VietNam, Ho Chi Minh</Text>
               </Pressable>
             )
           }

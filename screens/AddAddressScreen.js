@@ -6,10 +6,10 @@ import {
   Pressable,
   TextInput,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState, } from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { UserType } from "../UserContext";
 import axios from "axios";
 import { decode } from "base-64";
@@ -36,6 +36,13 @@ const AddAddressScreen = () => {
       console.log("error", error);
     }
   };
+
+  //refresh the address when the compoent  comes to the focus ie basically when we navigate to back 
+  useFocusEffect(
+  useCallback(()=>{
+    fetchAddresses()
+  },[])
+  )
   console.log("addresses", addresses);
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 50 }}>
@@ -91,7 +98,7 @@ const AddAddressScreen = () => {
         </Pressable>
         <Pressable>
           {/* All the adđe address*/}
-          {addresses.length > 0 && (
+          {addresses.length > 0 && addresses.map((address, index) => (
             <Pressable
               style={{
                 borderWidth: 1,
@@ -106,30 +113,32 @@ const AddAddressScreen = () => {
                 style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
               >
                 <Text style={{ fontSize: 15, fontWeight: "bold", gap: 3 }}>
-                  {addresses[0].name}
+                  {address.name}
                 </Text>
                 <Entypo name="location-pin" size={24} color="red" />
               </View>
 
               <Text style={{ fontSize: 15, color: "#181818" }}>
                 {" "}
-                {addresses[0].houseNo},{addresses[0].landmark}
+                {address.houseNo},{address.landmark}
               </Text>
               <Text style={{ fontSize: 15, color: "#181818" }}>
                 {" "}
-                {addresses[0].street}
+                {address.street}
               </Text>
               <Text style={{ fontSize: 15, color: "#181818" }}>
                 VietNam, Ho Chi Minh
               </Text>
               <Text style={{ fontSize: 15, color: "#181818" }}>
                 {" "}
-                phone No: {addresses[0].mobileNo}
+                phone No: {address.mobileNo}
               </Text>
               <Text style={{ fontSize: 15, color: "#181818" }}>
                 {" "}
-                pin code: {addresses[0].postalCode}
+                pin code: {address.postalCode}
               </Text>
+
+              
               <View style={{flexDirection:"row",alignItems:"center",gap:10,marginTop:7}}>
                 <Pressable
                   style={{
@@ -170,7 +179,7 @@ const AddAddressScreen = () => {
               </Pressable>
               </View>
             </Pressable>
-          )}
+          ))}
         </Pressable>
       </View>
     </ScrollView>

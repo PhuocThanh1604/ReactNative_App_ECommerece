@@ -80,7 +80,7 @@ const AddressScreen = () => {
 
         <TextInput
           placeholderTextColor={"black"}
-          placeholder="India"
+          placeholder="HCM City"
           style={{
             padding: 10,
             borderColor: "#D0D0D0",
